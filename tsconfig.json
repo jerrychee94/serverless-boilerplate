@@ -1,60 +1,32 @@
 {
-	"extends": "./tsconfig.paths.json",
-	"compileOnSave": true,
-	"compilerOptions": {
-		"module": "ESNext",
-		"moduleResolution": "node",
-		// "strict": true,
-		"alwaysStrict": true,
-		"resolveJsonModule": false,
-		"noImplicitAny": false,
-		"removeComments": false,
-		"skipLibCheck": true,
-		"noLib": false,
-		"allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true,
-		"importHelpers": true,
-		"incremental": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"allowJs": true,
-		"noEmit": true,
-		"isolatedModules": false,
-		"esModuleInterop": true,
-		"preserveConstEnums": true,
-		"target": "ESNext",
-		"lib": [
-			"ESNext"
-		],
-		// "types": [
-		// 	"node",
-		// 	"express"
-		// ],
-		"pretty": true,
-		"sourceMap": true
-		// "outDir": ".esbuild/.build",
-		// "typeRoots": [
-		// 	"src/types",
-		// 	"node_modules/@types"
-		// ]
-	},
-	"include": [
-		"src/**/*.ts",
-		"src/public/*.json",
-		"src/views/*",
-		"config/**/*",
-		"scripts/*.ts",
-		"*.mjs"
-	],
-	"exclude": [
-		"node_modules/**/*",
-		"src/**/*.spec.ts",
-		".serverless/**/*",
-		".webpack/**/*",
-		"_warmup/**/*",
-		".warmup/**/*",
-		".vscode/**/*",
-		"*.cjs",
-		"**/*.js"
-	]
-}
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "commonjs",
+      "lib": ["ES2020"],
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "moduleResolution": "node",
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "allowSyntheticDefaultImports": true,
+      "alwaysStrict": true,
+      "noImplicitAny": false,
+      "removeComments": false,
+      "noLib": false,
+      "allowJs": true,
+      "isolatedModules": false,
+      "preserveConstEnums": true,
+      "incremental": true,
+      "importHelpers": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
+  }

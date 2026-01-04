@@ -3,14 +3,14 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import responseTime from 'response-time';
-import userAgent from 'express-useragent';
 import swaggerUi from 'swagger-ui-express';
 import { config } from './config';
 import { correlationIdMiddleware } from './middleware/correlationId.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
-import { HTTPLogger, setResponseBody } from './utils/logger';
-import { AppLogger } from './utils/logger';
+import { HTTPLogger, setResponseBody, AppLogger } from './utils';
 import { swaggerSpec } from './config/swagger';
+import { AWSDynamoDB } from './services/aws/database.service';
+import documentRoutes from './routes/document.routes';
 
 const app: Express = express();
 
@@ -27,15 +27,11 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
-// User agent parsing
-app.use(userAgent.express());
-
 // Response time middleware
 app.use(responseTime((req, res, time) => {
   const correlationId = (req as any).correlationId;
   AppLogger.debug('Request completed', {
     method: req.method,
-    path: req.path,
     statusCode: res.statusCode,
     responseTime: `${time.toFixed(2)}ms`,
   }, correlationId);
@@ -50,6 +46,19 @@ app.use(setResponseBody);
 // HTTP Logger middleware
 app.use(HTTPLogger);
 
+// Initialize database connection
+AWSDynamoDB.initDB();
+
+// Initialize tables in development
+if (config.nodeEnv === 'development') {
+  import('./services/aws/document.service').then(({ AWSDocumentService }) => {
+    AWSDocumentService.initTables().catch((error) => {
+      AppLogger.error('Failed to initialize tables', error);
+      process.exit(1);
+    });
+  });
+}
+
 // Swagger documentation (only in local/dev)
 if (config.nodeEnv === 'development' || config.stage === 'dev') {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
@@ -62,11 +71,9 @@ if (config.nodeEnv === 'development' || config.stage === 'dev') {
 // Health check endpoint
 app.get('/health', (req, res) => {
   const correlationId = (req as any).correlationId;
-  const userAgentInfo = req.useragent;
-  
+    
   AppLogger.info('Health check', {
     status: 'ok',
-    userAgent: userAgentInfo?.source,
     ip: req.ip,
   }, correlationId);
   
@@ -81,7 +88,7 @@ app.get('/health', (req, res) => {
 });
 
 // API routes will go here
-// app.use('/api/document', documentRoutes);
+app.use('/api/document', documentRoutes);
 
 // 404 handler
 app.use((req, res) => {

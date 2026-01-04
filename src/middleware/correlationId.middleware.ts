@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { CORRELATION_ID_HEADER, generateCorrelationId } from '../utils/correlationId';
+import { CORRELATION_ID_HEADER, generateCorrelationId } from '../utils';
 
 export const correlationIdMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Get correlation ID from header or generate new one

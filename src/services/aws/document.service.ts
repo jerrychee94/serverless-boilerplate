@@ -2,7 +2,7 @@ import dynamoose from './database.service';
 import { DocumentModel } from '../../schemas/aws/document.schema';
 import { DatabaseLogger, AppLogger } from '../../config/logger';
 import { AWSDynamoDB } from './database.service';
-import { awsDocumentService } from './aws/document.service';
+
 export class AWSDocumentService extends AWSDynamoDB {
   constructor() {
     super();
