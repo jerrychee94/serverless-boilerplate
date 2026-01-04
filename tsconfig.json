@@ -1,0 +1,60 @@
+{
+	"extends": "./tsconfig.paths.json",
+	"compileOnSave": true,
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "node",
+		// "strict": true,
+		"alwaysStrict": true,
+		"resolveJsonModule": false,
+		"noImplicitAny": false,
+		"removeComments": false,
+		"skipLibCheck": true,
+		"noLib": false,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"importHelpers": true,
+		"incremental": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowJs": true,
+		"noEmit": true,
+		"isolatedModules": false,
+		"esModuleInterop": true,
+		"preserveConstEnums": true,
+		"target": "ESNext",
+		"lib": [
+			"ESNext"
+		],
+		// "types": [
+		// 	"node",
+		// 	"express"
+		// ],
+		"pretty": true,
+		"sourceMap": true
+		// "outDir": ".esbuild/.build",
+		// "typeRoots": [
+		// 	"src/types",
+		// 	"node_modules/@types"
+		// ]
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/public/*.json",
+		"src/views/*",
+		"config/**/*",
+		"scripts/*.ts",
+		"*.mjs"
+	],
+	"exclude": [
+		"node_modules/**/*",
+		"src/**/*.spec.ts",
+		".serverless/**/*",
+		".webpack/**/*",
+		"_warmup/**/*",
+		".warmup/**/*",
+		".vscode/**/*",
+		"*.cjs",
+		"**/*.js"
+	]
+}
