@@ -27,6 +27,7 @@
     "class-validator": "^0.14.3",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
+    "dynamoose": "^4.0.2",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-useragent": "^2.0.2",
@@ -39,11 +40,13 @@
     "response-time": "^2.3.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tslib": "^2.7.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
+    "@types/dynamoose": "^3.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
     "@types/response-time": "^2.3.9",

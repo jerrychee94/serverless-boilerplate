@@ -110,9 +110,9 @@ export class DocumentService {
       const presignedPost = await this.generatePresignedPost(
         config.s3.scannerBucket,
         scannerKey,
-        dto.limitFileSizeInBytes,
-        dto.expireInSecs,
         fileName,
+        dto.expireInSecs,
+        dto.limitFileSizeInBytes,
         dto.useOriginalFileName,
         correlationId
       );
@@ -158,9 +158,9 @@ export class DocumentService {
   private async generatePresignedPost(
     bucket: string,
     key: string,
-    limitFileSize?: number,
-    expireInSecs: number = 300,
     systemFileName: string,
+    expireInSecs: number = 300,
+    limitFileSize?: number,
     useOriginalFileName?: boolean,
     correlationId?: string
   ): Promise<PresignedPost> {
@@ -185,9 +185,6 @@ export class DocumentService {
           Fields: fields,
           Conditions: conditions,
           Expires: expireInSecs,
-        },
-        {
-          expiresIn: expireInSecs * 1000,
         }
       );
 

@@ -1,7 +1,6 @@
-import dynamoose from './database.service';
+import { AWSDynamoDB, TableUpdateOptions } from './database.service';
 import { DocumentModel } from '../../schemas/aws/document.schema';
 import { DatabaseLogger, AppLogger } from '../../config/logger';
-import { AWSDynamoDB } from './database.service';
 
 export class AWSDocumentService extends AWSDynamoDB {
   constructor() {
@@ -70,7 +69,7 @@ export class AWSDocumentService extends AWSDynamoDB {
         updateQuery.condition(condition);
       }
 
-      const updatedDoc = await updateQuery.return(dynamoose.Condition.ALL_NEW);
+      const updatedDoc = await updateQuery.return('ALL_NEW'); // Stub for dynamoose.Condition.ALL_NEW
 
       DatabaseLogger.info('Document updated successfully', { id, ownerId }, correlationId);
       return updatedDoc.toJSON();
@@ -145,7 +144,7 @@ export class AWSDocumentService extends AWSDynamoDB {
    */
   public static async initTables() {
     await AWSDynamoDB.ensureTable(DocumentModel, {
-      [AWSDynamoDB.TableUpdateOptions.throughput]: 'ON_DEMAND',
+      [TableUpdateOptions.throughput]: 'ON_DEMAND',
     });
   }
 }

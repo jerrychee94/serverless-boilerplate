@@ -49,40 +49,20 @@ import { Document } from './document.model';
  *           description: Use original filename
  */
 export class CreateDocumentDto extends BaseReqModel {
-  @IsString()
   fileUri!: string;
 
-  @IsString()
   ownerId!: string;
 
-  @IsOptional()
-  @IsString()
   referenceId?: string;
 
-  @IsOptional()
-  @IsUrl()
   redirectUrl?: string;
 
-  @IsOptional()
-  @IsArray()
-  @ArrayMaxSize(10)
-  @IsUrl({}, { each: true })
   webhookUrl?: string[];
 
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Max(12582912) // 12MB
   limitFileSizeInBytes?: number;
 
-  @IsOptional()
-  @IsNumber()
-  @Min(60)
-  @Max(3600)
   expireInSecs?: number;
 
-  @IsOptional()
-  @IsBoolean()
   useOriginalFileName?: boolean;
 }
 

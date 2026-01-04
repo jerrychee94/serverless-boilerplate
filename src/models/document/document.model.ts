@@ -113,14 +113,14 @@ export interface WebhookDeliveryStatus {
 export interface Document {
   id: string;
   ownerId: string;
-  docType?: DocType;
+  docType?: string;
   bucket: string;
   fileKey: string;
   fileName: string;
   originalFileName?: string;
   fileSize?: number;
   fileMD5?: string;
-  scanStatus: ScanStatus;
+  scanStatus: string;
   scannedAt?: string;
   uploaded: number; // 0 = not uploaded, 1 = uploaded
   uploadedAt?: string;

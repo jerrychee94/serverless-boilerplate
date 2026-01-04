@@ -8,7 +8,8 @@ export const config = {
   region: process.env.REGION || 'ap-southeast-1',
   serviceName: process.env.SERVICE_NAME || 'dms-service',
   stage: process.env.STAGE || 'dev',
-
+  configName: process.env.CONFIG_NAME || 'dev',
+ 
   dynamodb: {
     tablePrefix: process.env.DYNAMODB_TABLE_PREFIX || 'dev_dms_Document',
     endpoint: process.env.DYNAMODB_ENDPOINT, // undefined for production
@@ -29,5 +30,14 @@ export const config = {
 
   logging: {
     level: process.env.LOG_LEVEL || 'info',
+  },
+
+  swagger: {
+    title: process.env.SWAGGER_TITLE || 'DMS API',
+    description: process.env.SWAGGER_DESCRIPTION || 'Document Management Service API Documentation',
+    version: process.env.SWAGGER_VERSION || '1.0.0',
+    server: process.env.SWAGGER_SERVER || '/api',
+    contactName: process.env.CONTACT_NAME || 'API Support',
+    contactEmail: process.env.CONTACT_EMAIL || 'jerrycheetest@gmail.com'
   },
 };

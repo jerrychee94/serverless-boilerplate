@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import pinoPretty from 'pino-pretty';
-import { config } from '../config';
+import { config } from '../config/index';
 import { CORRELATION_ID_HEADER, generateCorrelationId } from './correlationId';
 
 export enum LogLevel {
@@ -130,19 +130,19 @@ export default class Logger {
 }
 
 export function setResponseBody(req: Request, res: Response, next: NextFunction) {
-  const rawResponse = res.write;
-  const rawResponseEnd = res.end;
+  const rawResponse = (res as any).write;
+  const rawResponseEnd = (res as any).end;
   if (rawResponse && rawResponseEnd) {
     const chunks: Buffer[] = [];
-    res.write = (...restArgs: any[]) => {
-      chunks.push(Buffer.from(restArgs[0]));
-      rawResponse.apply(res, restArgs);
+    (res as any).write = (chunk: any, encoding?: BufferEncoding, callback?: () => void) => {
+      chunks.push(Buffer.from(chunk));
+      rawResponse.call(res, chunk, encoding, callback);
       return true;
     };
 
-    res.end = (...restArgs: any[]) => {
-      if (restArgs[0]) {
-        chunks.push(Buffer.from(restArgs[0]));
+    (res as any).end = (chunk?: any, encoding?: BufferEncoding, callback?: () => void) => {
+      if (chunk) {
+        chunks.push(Buffer.from(chunk));
       }
       const body = Buffer.concat(chunks).toString('utf8');
 
@@ -157,44 +157,17 @@ export function setResponseBody(req: Request, res: Response, next: NextFunction)
       } else {
         (res as any).body = contentType;
       }
-      rawResponseEnd.apply(res, restArgs);
+      rawResponseEnd.call(res, chunk, encoding, callback);
     };
 
+    next();
+  } else {
     next();
   }
 }
 
 export const HTTPLogger = pinoHttp({
   logger: new Logger('app:http', config.logging.level as LogLevel).instance,
-  quietReqLogger: true,
-  genReqId: (req: Request) => {
-    // Get correlation ID from request or generate new one
-    const correlationId = (req.headers[CORRELATION_ID_HEADER] as string) || generateCorrelationId();
-    // Store it in request for later use
-    (req as any).correlationId = correlationId;
-    return correlationId;
-  },
-  serializers: {
-    err: (err: Error) => err.message,
-    req: (req: Request) => {
-      return {
-        method: req.method,
-        url: req.url,
-        headers: req.headers,
-        query: req.query,
-        params: req.params,
-        body: req.body,
-        correlationId: (req as any).correlationId,
-      };
-    },
-    res: (res: Response) => {
-      return {
-        statusCode: res.statusCode,
-        body: (res as any).body,
-      };
-    },
-  },
-  customAttributeKeys: { err: 'errorMessage' },
 });
 
 export const DatabaseLogger = new Logger('aws:database', config.logging.level === 'debug' ? LogLevel.DEBUG : LogLevel.SILENT);

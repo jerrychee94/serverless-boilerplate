@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { createDocument, getDocument } from '../controllers/document.controller';
 
-const router = Router();
+const router: ReturnType<typeof Router> = Router();
 
 /**
  * @swagger
