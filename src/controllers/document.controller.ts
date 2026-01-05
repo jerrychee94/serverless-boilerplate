@@ -27,8 +27,16 @@ import { AppError } from '../middleware/error.middleware';
  *               $ref: '#/components/schemas/DocumentResponse'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 export const createDocument = async (
   req: Request,
@@ -38,7 +46,6 @@ export const createDocument = async (
   try {
     const correlationId = (req as any).correlationId;
 
-    // Transform and validate request
     const dto = plainToClass(CreateDocumentDto, req.body);
     const errors = await validate(dto);
 
@@ -94,8 +101,16 @@ export const createDocument = async (
  *               $ref: '#/components/schemas/Document'
  *       404:
  *         description: Document not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 export const getDocument = async (
   req: Request,

@@ -225,7 +225,7 @@ Lambda (apiLambda) - Process Scan Results
      - Clear `processingLock`
      - Increment `processingAttempts` counter
      - If `processingAttempts` exceeds threshold (e.g., 3), send to DLQ
-     - Invoke webhook with error details
+   - Invoke webhook with error details
    - Compensation logic: If S3 copy succeeded but DynamoDB update failed:
      - Mark file in destination bucket for cleanup (via lifecycle policy or reconciliation job)
      - Log incident for manual review

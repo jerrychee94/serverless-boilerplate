@@ -27,6 +27,33 @@ const options: swaggerJsdoc.Options = {
           bearerFormat: 'JWT',
         },
       },
+      schemas: {
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            statusCode: {
+              type: 'number',
+              example: 400,
+            },
+            name: {
+              type: 'string',
+              example: 'ValidationError',
+            },
+            message: {
+              type: 'string',
+              example: 'Validation failed',
+            },
+            correlationId: {
+              type: 'string',
+              description: 'Correlation ID for request tracing',
+            },
+            data: {
+              type: 'object',
+              description: 'Additional error details',
+            },
+          },
+        },
+      },
     },
   },
   apis: ['./src/routes/*.ts', './src/models/**/*.ts', './src/controllers/*.ts'],

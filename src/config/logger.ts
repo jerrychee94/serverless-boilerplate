@@ -41,7 +41,7 @@ export default class Logger {
       options,
       config.nodeEnv === 'development'
         ? pinoPretty({
-            colorize: true,
+      colorize: true,
             levelFirst: true,
             translateTime: true,
             sync: true,

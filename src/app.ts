@@ -68,7 +68,45 @@ if (config.nodeEnv === 'development' || config.stage === 'dev') {
   AppLogger.info('Swagger documentation available at /api-docs');
 }
 
-// Health check endpoint
+// OpenAPI JSON endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Health]
+ *     description: Returns the health status of the service
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 service:
+ *                   type: string
+ *                   example: dms-service
+ *                 environment:
+ *                   type: string
+ *                   example: dev
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 correlationId:
+ *                   type: string
+ *                 uptime:
+ *                   type: number
+ *                   description: Uptime in seconds
+ */
 app.get('/health', (req, res) => {
   const correlationId = (req as any).correlationId;
     

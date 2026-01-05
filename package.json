@@ -9,7 +9,8 @@
     "start": "node dist/app.js",
     "debug": "nodemon --inspect --exec ts-node src/app.ts",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "openapi:generate": "ts-node scripts/generate-openapi.ts"
   },
   "keywords": [],
   "author": "",
