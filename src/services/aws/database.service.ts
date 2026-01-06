@@ -1,7 +1,7 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import autoBind from 'auto-bind';
-// import dynamoose from 'dynamoose'; // Temporarily disabled due to dependency issues
+import dynamoose from 'dynamoose';
 import { config } from '../../config';
 import { DatabaseLogger, AppLogger } from '../../config/logger';
 
@@ -14,14 +14,12 @@ export enum TableUpdateOptions {
 }
 
 // Configure DynamoDB defaults
-// dynamoose.Table.defaults.set({
-//   create: !!config.dynamodb.endpoint, // Create tables in local development
-//   waitForActive: !!config.dynamodb.endpoint, // Wait for active in local
-//   throughput: 'ON_DEMAND',
-//   prefix: config.dynamodb.tablePrefix,
-// });
-
-// TODO: Replace with direct AWS SDK DynamoDB configuration when dependencies are available
+dynamoose.Table.defaults.set({
+  create: !!config.dynamodb.endpoint, // Create tables in local development
+  waitForActive: !!config.dynamodb.endpoint, // Wait for active in local
+  throughput: 'ON_DEMAND',
+  prefix: config.dynamodb.tablePrefix,
+});
 
 export class AWSDynamoDB {
   constructor() {
@@ -32,15 +30,14 @@ export class AWSDynamoDB {
     try {
       if (config.dynamodb.endpoint) {
         // Local development
-        // dynamoose.aws.ddb.local(config.dynamodb.endpoint);
-        AppLogger.info('DynamoDB initialized for local development (stub)', {
+        dynamoose.aws.ddb.local(config.dynamodb.endpoint);
+        AppLogger.info('DynamoDB initialized for local development', {
           endpoint: config.dynamodb.endpoint,
         });
       } else {
         // AWS production
-        const ddb = new DynamoDBClient({
+        const ddb = new DynamoDB({
           region: config.dynamodb.region,
-          // logger: DatabaseLogger, // Temporarily disabled
           requestHandler: new NodeHttpHandler({
             requestTimeout: 5000,
             connectionTimeout: 1000
@@ -49,8 +46,8 @@ export class AWSDynamoDB {
           retryMode: 'adaptive',
         });
 
-        // dynamoose.aws.ddb.set(ddb);
-        AppLogger.info('DynamoDB initialized for AWS (stub)', {
+        dynamoose.aws.ddb.set(ddb);
+        AppLogger.info('DynamoDB initialized for AWS', {
           region: config.dynamodb.region,
         });
       }
@@ -107,12 +104,4 @@ export class AWSDynamoDB {
   }
 }
 
-// export default dynamoose;
-
-// Stub export until dynamoose is available
-export default {
-  Table: { defaults: { set: () => {} } },
-  aws: { ddb: { local: () => {}, set: () => {} } },
-  model: () => ({}),
-  type: { ANY: {} },
-} as any;
+export default dynamoose;

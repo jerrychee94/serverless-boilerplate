@@ -216,7 +216,7 @@ export class DocumentService {
         AppLogger.warn('Document not found', { ownerId, documentId }, correlationId);
       }
 
-      return document;
+      return document as Document | null;
     } catch (error: any) {
       AppLogger.error('Error getting document', error, { ownerId, documentId }, correlationId);
       throw error;

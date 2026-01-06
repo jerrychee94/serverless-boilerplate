@@ -63,16 +63,20 @@ export class AWSDocumentService extends AWSDynamoDB {
     try {
       DatabaseLogger.debug('Updating document in DynamoDB', { id, ownerId, updates }, correlationId);
 
-      const updateQuery = DocumentModel.update({ id, ownerId }, updates);
-
+      // Build update options with proper return type
+      const updateOptions: any = { return: 'document' };
       if (condition) {
-        updateQuery.condition(condition);
+        updateOptions.condition = condition;
       }
 
-      const updatedDoc = await updateQuery.return('ALL_NEW'); // Stub for dynamoose.Condition.ALL_NEW
+      const updatedDoc = await DocumentModel.update(
+        { id, ownerId }, 
+        updates, 
+        updateOptions
+      ) as any;
 
       DatabaseLogger.info('Document updated successfully', { id, ownerId }, correlationId);
-      return updatedDoc.toJSON();
+      return updatedDoc ? updatedDoc.toJSON() : null;
     } catch (error: any) {
       if (error.name === 'ValidationException' && error.message.includes('ConditionalCheckFailed')) {
         DatabaseLogger.warn('Conditional update failed', { id, ownerId }, correlationId);

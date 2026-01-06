@@ -1,48 +1,132 @@
-// import dynamoose from '../../services/aws/database.service';
+import dynamoose from '../../services/aws/database.service';
 
-// Stub schema definition until dynamoose is available
-export const DocumentSchema = {
-  // TODO: Replace with actual dynamoose schema when dependencies are installed
-  id: String,
-  ownerId: String,
-  docType: String,
-  bucket: String,
-  fileKey: String,
-  fileName: String,
-  originalFileName: String,
-  fileSize: Number,
-  fileMD5: String,
-  scanStatus: String,
-  scannedAt: Date,
-  uploaded: Number,
-  uploadedAt: Date,
-  uploadedCount: Number,
-  referenceId: String,
-  redirectUrl: String,
-  webhookUrl: Array,
-  correlationId: String,
-  processingLock: Object,
-  processingAttempts: Number,
-  lastProcessedAt: Date,
-  webhookDeliveryStatus: Object,
-  createdDate: String,
-  expires: Number,
-} as any;
+// Document Schema Definition
+export const DocumentSchema = new dynamoose.Schema(
+  {
+    id: {
+      type: String,
+      hashKey: true,
+      required: true,
+    },
+    ownerId: {
+      type: String,
+      rangeKey: true,
+      required: true,
+      index: {
+        name: 'ownerDocsGI',
+        type: 'global',
+        rangeKey: 'id',
+      },
+    },
+    docType: {
+      type: String,
+      enum: ['document', 'image', 'unknown'],
+      index: [
+        {
+          name: 'docTypeCreatedGI',
+          type: 'global',
+          rangeKey: 'createdAt',
+        },
+        {
+          name: 'docTypeUploadedGI',
+          type: 'global',
+          rangeKey: 'uploaded',
+        },
+      ],
+    },
+    bucket: {
+      type: String,
+      required: true,
+      index: {
+        name: 'docBucketTypeGI',
+        type: 'global',
+        rangeKey: 'docType',
+      },
+    },
+    fileKey: {
+      type: String,
+      required: true,
+    },
+    fileName: {
+      type: String,
+      required: true,
+    },
+    originalFileName: String,
+    fileSize: Number,
+    fileMD5: String,
+    scanStatus: {
+      type: String,
+      required: true,
+      enum: ['PENDING', 'CLEAN', 'INFECTED', 'PROCCESSING_ERROR', 'SKIPPED'],
+      default: 'PENDING',
+    },
+    scannedAt: Date,
+    uploaded: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    uploadedAt: {
+      type: Date,
+      index: {
+        name: 'ownerDocsUploadedGI',
+        type: 'global',
+        rangeKey: 'uploadedAt',
+      },
+    },
+    uploadedCount: {
+      type: Number,
+      default: 0,
+    },
+    referenceId: String,
+    redirectUrl: String,
+    webhookUrl: {
+      type: Array,
+      schema: [String],
+    },
+    correlationId: String,
+    processingLock: {
+      type: Object,
+      schema: {
+        timestamp: Date,
+        expiresAt: Date,
+      },
+    },
+    processingAttempts: {
+      type: Number,
+      default: 0,
+    },
+    lastProcessedAt: Date,
+    webhookDeliveryStatus: {
+      type: Array,
+      schema: [
+        {
+          type: Object,
+          schema: {
+            url: String,
+            status: String,
+            attempts: Number,
+            lastAttemptAt: Date,
+          },
+        },
+      ],
+    },
+    createdDate: {
+      type: String,
+      required: true,
+    },
+    expires: {
+      type: Number,
+      default: -1,
+    },
+  },
+  {
+    timestamps: {
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+    },
+  }
+);
 
 // Create Model
-// export const DocumentModel = dynamoose.model('Document', DocumentSchema);
-
-// Stub model until dynamoose is available
-export const DocumentModel = {
-  table: {
-    name: 'Document',
-    create: async () => {},
-    exists: async () => true,
-    update: async () => {},
-    delete: async () => {},
-  },
-  get: async () => ({}),
-  update: () => ({ return: () => ({}) }),
-  query: () => ({ exec: async () => [] }),
-  delete: async () => ({}),
-} as any;
+export const DocumentModel = dynamoose.model('Document', DocumentSchema);
