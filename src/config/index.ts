@@ -20,6 +20,8 @@ export const config = {
     scannerBucket: process.env.SCANNER_S3_BUCKET || 'scanner-bucket-dev',
     scannerPath: process.env.SCANNER_S3_PATH || 'quarantine/',
     region: process.env.AWS_REGION || 'ap-southeast-1',
+    endpoint: process.env.S3_ENDPOINT, // For local S3-compatible storage (MinIO, LocalStack, Garage)
+    forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true', // Required for MinIO and LocalStack
   },
 
   aws: {

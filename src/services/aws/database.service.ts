@@ -65,38 +65,30 @@ export class AWSDynamoDB {
   }
 
   /**
-   * Create or update table
+   * Initialize table
+   * In Dynamoose v4, tables are created automatically based on Table.defaults.set() configuration
+   * This method triggers table initialization by performing a scan operation
    */
   public static async ensureTable(
     model: any,
     options: Partial<Record<TableUpdateOptions, any>> = {}
   ) {
     try {
-      const table = model.table;
-
-      if (config.dynamodb.endpoint) {
-        // Local development - create table
-        await table.create(options);
-        AppLogger.info('Table created in local DynamoDB', {
-          tableName: table.name,
-        });
-      } else {
-        // Production - ensure table exists and is up to date
-        const exists = await table.exists();
-        if (!exists) {
-          await table.create(options);
-          AppLogger.info('Table created in production DynamoDB', {
-            tableName: table.name,
-          });
-        } else {
-          // Update table if needed
-          await table.update(options);
-          AppLogger.debug('Table updated', {
-            tableName: table.name,
-            options,
-          });
-        }
-      }
+      const tableName = model.name;
+      
+      AppLogger.info('Table initialization started', {
+        tableName,
+        environment: config.dynamodb.endpoint ? 'local' : 'production',
+      });
+      
+      // Trigger table creation by performing a scan with limit 0
+      // This will create the table if create: true is set in defaults
+      await model.scan().limit(0).exec();
+      
+      AppLogger.info('Table initialized successfully', {
+        tableName,
+        autoCreate: !!config.dynamodb.endpoint,
+      });
     } catch (error: any) {
       AppLogger.error('Failed to ensure table', error, { options });
       throw error;

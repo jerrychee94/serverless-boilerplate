@@ -13,11 +13,12 @@ export class DocumentService {
   constructor() {
     this.s3Client = new S3Client({
       region: config.s3.region,
-      endpoint: config.dynamodb.endpoint, // For local S3 (localstack)
-      credentials: config.dynamodb.endpoint
+      endpoint: config.s3.endpoint, // For local S3-compatible storage (MinIO, LocalStack, Garage)
+      forcePathStyle: config.s3.forcePathStyle, // Required for MinIO and LocalStack
+      credentials: config.s3.endpoint
         ? {
-            accessKeyId: 'test',
-            secretAccessKey: 'test',
+            accessKeyId: process.env.S3_ACCESS_KEY_ID || 'minioadmin',
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || 'minioadmin',
           }
         : undefined,
     });

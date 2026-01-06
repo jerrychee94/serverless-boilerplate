@@ -15,33 +15,15 @@ export const DocumentSchema = new dynamoose.Schema(
       index: {
         name: 'ownerDocsGI',
         type: 'global',
-        rangeKey: 'id',
       },
     },
     docType: {
       type: String,
       enum: ['document', 'image', 'unknown'],
-      index: [
-        {
-          name: 'docTypeCreatedGI',
-          type: 'global',
-          rangeKey: 'createdAt',
-        },
-        {
-          name: 'docTypeUploadedGI',
-          type: 'global',
-          rangeKey: 'uploaded',
-        },
-      ],
     },
     bucket: {
       type: String,
       required: true,
-      index: {
-        name: 'docBucketTypeGI',
-        type: 'global',
-        rangeKey: 'docType',
-      },
     },
     fileKey: {
       type: String,
@@ -68,11 +50,6 @@ export const DocumentSchema = new dynamoose.Schema(
     },
     uploadedAt: {
       type: Date,
-      index: {
-        name: 'ownerDocsUploadedGI',
-        type: 'global',
-        rangeKey: 'uploadedAt',
-      },
     },
     uploadedCount: {
       type: Number,
